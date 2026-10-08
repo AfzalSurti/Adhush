@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "AdHush – Auto-mute ads for MX Player",
+  "short_name": "AdHush",
+  "version": "1.2.0",
+  "description": "Automatically mutes and skips ads on Amazon MX Player, and turns the sound back on when your show returns.",
+  "permissions": ["storage", "notifications"],
+  "host_permissions": ["*://*.mxplayer.in/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.mxplayer.in/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "AdHush",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

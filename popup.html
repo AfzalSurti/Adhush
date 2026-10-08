@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AdHush</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="" width="36" height="36">
+    <div>
+      <h1>AdHush</h1>
+      <p>Auto-mute ads on MX Player</p>
+    </div>
+  </header>
+
+  <section id="status" class="status idle">
+    <span class="dot"></span>
+    <span id="statusText">Checking…</span>
+  </section>
+
+  <section class="card">
+    <label class="row">
+      <span><b>Auto-mute ads</b><small>Mute during ads, sound back after</small></span>
+      <input type="checkbox" id="enabled"><i class="switch"></i>
+    </label>
+    <label class="row">
+      <span><b>Skip ads</b><small>Click "Skip Ad", else play ads at 16× speed</small></span>
+      <input type="checkbox" id="skipAds"><i class="switch"></i>
+    </label>
+    <label class="row">
+      <span><b>Bring me back after ads</b><small>Switch to the show's tab when the ad ends</small></span>
+      <input type="checkbox" id="returnAfterAd"><i class="switch"></i>
+    </label>
+    <label class="row">
+      <span><b>Episode finished alert</b><small>Desktop notification when it ends</small></span>
+      <input type="checkbox" id="notifyEpisodeEnd"><i class="switch"></i>
+    </label>
+    <label class="row">
+      <span><b>Ad break over alert</b><small>Notify when the show resumes (off if "Bring me back" is on)</small></span>
+      <input type="checkbox" id="notifyAdEnd"><i class="switch"></i>
+    </label>
+    <label class="row">
+      <span><b>Debug badge</b><small>Show what AdHush detects on the page</small></span>
+      <input type="checkbox" id="debug"><i class="switch"></i>
+    </label>
+  </section>
+
+  <section class="stats">
+    <div><b id="adsMuted">0</b><small>ads muted</small></div>
+    <div><b id="mutedTime">0s</b><small>of ad audio skipped</small></div>
+  </section>
+
+  <footer>
+    <button id="diag" type="button">Copy diagnostics</button>
+    <span id="diagMsg"></span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
