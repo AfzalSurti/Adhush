@@ -1,59 +1,102 @@
-# AdHush – Auto-mute ads for MX Player
+# AdHush 🔇
 
-A Chrome extension (also works in Edge and Brave) that mutes the MX Player tab while an ad plays and turns the sound back on when your show returns. It can also notify you when an episode finishes, so you can work in another tab without checking.
+**Auto-mute and skip ads on Amazon MX Player** — so you can switch to another tab while you watch, without jumping back every time an ad starts.
 
-## Install (developer mode)
+- 🔇 **Mutes the tab** the moment an ad starts, and turns the sound back on when your show returns
+- ⏩ **Skips ads**: clicks "Skip Ad" when it appears, otherwise fast-forwards the ad at 16×
+- ↩️ **Brings you back** to the show's tab when the ad break ends (optional)
+- 🔔 **Notifies you** when the episode finishes
+- 🔒 **No tracking**: collects no data, talks to no server
 
-1. Unzip `adhush.zip` to a folder you'll keep (for example `Documents/adhush`).
-2. Open `chrome://extensions` and turn on **Developer mode** (top right).
-3. Click **Load unpacked** and pick the `adhush` folder.
-4. Pin the extension (puzzle icon → pin AdHush) so you can see the badge.
-5. Open any episode on mxplayer.in. If the page was already open, reload it once.
+Works in **Google Chrome, Microsoft Edge and Brave** on desktop.
+
+**[⬇️ Download the latest version](https://github.com/AfzalSurti/Adhush/releases/latest/download/adhush.zip)**
+
+---
+
+## Install
+
+AdHush isn't on the Chrome Web Store yet, so you install it in developer mode. It takes about a minute.
+
+1. **Download** [`adhush.zip`](https://github.com/AfzalSurti/Adhush/releases/latest/download/adhush.zip) (or pick a version on the [Releases](https://github.com/AfzalSurti/Adhush/releases) page).
+2. **Unzip** it into a folder you'll keep, for example `Documents\AdHush`. Don't delete or move this folder later, because Chrome loads the extension from it.
+3. Open **`chrome://extensions`** (in Edge: `edge://extensions`).
+4. Turn on **Developer mode** (top-right switch).
+5. Click **Load unpacked** and select the folder that contains `manifest.json`.
+6. Click the puzzle icon 🧩 in the toolbar and **pin AdHush**.
+7. Open or **refresh** an episode on [mxplayer.in](https://www.mxplayer.in).
+
+## Update to a new version
+
+You don't need to remove AdHush. Your settings are kept.
+
+1. Download the new [`adhush.zip`](https://github.com/AfzalSurti/Adhush/releases/latest/download/adhush.zip).
+2. Unzip it **into your existing AdHush folder** and choose **Replace the files**.
+3. Open `chrome://extensions` and click the **reload ↻** icon on the AdHush card. Check that it shows the new version number.
+4. Refresh your MX Player tab.
+
+Watch this repo (**Watch → Custom → Releases**) to get an email when a new version is out.
+
+## Settings
+
+Click the AdHush icon to open the popup:
+
+| Switch | What it does |
+|---|---|
+| **Auto-mute ads** | Master on/off. Mutes the tab during ads and unmutes after |
+| **Skip ads** | Clicks "Skip Ad" when available, otherwise plays the ad at 16× speed |
+| **Bring me back after ads** | Switches to the show's tab when the ad break ends |
+| **Episode finished alert** | Desktop notification when the episode ends |
+| **Ad break over alert** | Notification when the show resumes |
+| **Debug badge** | Shows on the page what AdHush detects and why |
+
+If you mute the tab yourself, AdHush leaves it muted.
 
 ## How it works
 
-The content script checks the player several times a second (and on every video event, so it still reacts in a background tab). It treats the moment as an ad when any of these show up:
+AdHush watches the video player on the page and treats it as an ad when any of these appear:
 
-- the main video element switches to a short clip (under 3 minutes)
-- a separate short, un-muted video starts playing while the show is paused, or sits inside an ad container (`ima`, `ad-container`, …)
-- a Google ad frame (IMA / DoubleClick) is visible over the paused show
-- an "Ad", "Ad 1 of 2" or "Skip Ad" label is visible on the player for two checks in a row
+- the main video switches to a short clip (under 3 minutes)
+- a separate short video plays while the show is paused, or sits inside an ad container
+- a Google ad frame covers the paused show
+- an "Ad", "Ad 1 of 2" or "Skip Ad" label is shown on the player
 
-When the ad ends and the show is playing again, the tab is unmuted within about half a second. Between ads in the same break it waits up to 4 seconds before unmuting, so you don't get a blip of sound.
+During an ad it mutes the tab, then clicks Skip or speeds the ad up. If the ad runs inside Google's protected ad frame, the page can't reach it, so AdHush only mutes it. When the show plays again, the sound and your playback speed come back.
 
-If you mute the tab yourself, AdHush leaves it alone and won't unmute it.
+## Something not working?
 
-### Skipping ads (v1.1)
+1. Turn on **Debug badge** in the popup.
+2. When the problem happens (an ad that wasn't muted, or the show muted by mistake), open the popup and click **Copy diagnostics**.
+3. [Open an issue](https://github.com/AfzalSurti/Adhush/issues) and paste what was copied. It shows exactly what the player looked like, so the detection can be fixed.
 
-While an ad is muted, AdHush also tries to get rid of it:
+## Privacy
 
-1. If a **Skip / Skip Ad** button is visible, it clicks it.
-2. Otherwise, if the ad video is reachable on the page, it plays it at **16× speed** (a 30-second ad ends in about 2 seconds). Your normal playback speed is restored as soon as the show returns.
-3. If the ad plays inside Google's own ad frame, the page can't touch it, so it stays muted only. The debug pill shows "mute only" in that case.
+AdHush has no servers and collects nothing. Your settings and the "ads muted" counter are stored only in your own browser.
 
-Turn this off with the **Skip ads** switch if you'd rather just mute.
+Permissions it asks for:
+- **storage**: save your settings and counter
+- **notifications**: episode-finished and ad-break alerts
+- **access to mxplayer.in only**: so it can watch the player. It runs on no other site.
 
-### Bring me back after ads (v1.2)
+## For the maintainer: publishing a new version
 
-Turn on **Bring me back after ads** and, when an ad break ends and the show is playing again, Chrome switches to the MX Player tab and raises its window. It only fires when the show actually resumes, not in the short gaps between two ads. When this is on, the "Ad break over" notification is skipped since you're already being taken there.
+1. Make your changes and test them (reload ↻ in `chrome://extensions`, refresh MX Player).
+2. Increase `"version"` in `manifest.json` (for example `1.2.0` → `1.3.0`).
+3. Commit and push:
+```bash
+   git add .
+   git commit -m "v1.3.0: what changed"
+   git push
+```
+4. Zip the extension files (everything except `.git`, `README.md`, `LICENSE`, `.gitignore`) into a file named exactly **`adhush.zip`**.
+5. Go to [Releases → New release](https://github.com/AfzalSurti/Adhush/releases/new), create tag `v1.3.0`, write what changed, attach `adhush.zip`, and publish.
 
-## Popup
+The download links in this README always point to the newest release, so they never need changing.
 
-- **Auto-mute ads** – master on/off switch
-- **Episode finished alert** – desktop notification when the episode ends; clicking it jumps to the tab
-- **Ad break over alert** – notification when the show resumes after an ad
-- **Debug badge** – a pill in the bottom-left corner of the page showing what AdHush detects and why
-- **Copy diagnostics** – copies a JSON snapshot of the player (videos, frames, on-screen text) for tuning detection
+## Note
 
-## If an ad isn't caught (or the show gets muted by mistake)
+AdHush is an independent project and is not affiliated with Amazon or MX Player. Free streaming is paid for by ads; muting or skipping them may go against the site's terms of use. Use it at your own discretion.
 
-1. Turn on **Debug badge**.
-2. When the problem happens, open the popup and click **Copy diagnostics**.
-3. Paste the JSON to the developer. It shows exactly what the page looked like, so the detection rule can be adjusted.
+## License
 
-## Publishing to the Chrome Web Store
-
-- Register a developer account (one-time US$5 fee).
-- Zip the folder contents (manifest.json at the root of the zip) and upload.
-- Privacy: AdHush collects no data. Settings and the ads-muted counter stay in your browser's extension storage.
-- Permissions: `storage` (settings, stats), `notifications` (alerts), host access to `mxplayer.in` only.
+[MIT](LICENSE) © 2026 Afzal Surti
