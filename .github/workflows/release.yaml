@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check manifest version matches tag
+        run: |
+          V=$(python3 -c "import json; print(json.load(open('manifest.json'))['version'])")
+          if [ "v$V" != "$GITHUB_REF_NAME" ]; then
+            echo "manifest.json says $V but the tag is $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+      - name: Build adhush.zip
+        run: zip -r adhush.zip manifest.json background.js content.js popup.html popup.css popup.js icons
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: AdHush ${{ github.ref_name }}
+          files: adhush.zip
+          generate_release_notes: true
